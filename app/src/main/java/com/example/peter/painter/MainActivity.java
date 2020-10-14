@@ -113,9 +113,14 @@ public class MainActivity extends Activity {
                 pickSize.show();
                 return true;
 
-            // Zmazanie naposledy nakreslenej ciary
-            case R.id.zmazat_poslednu_ciaru:
-                myCanvas.zmazPoslednuCiaru();
+            // Pridanie kruhu
+            case R.id.pridat_kruh:
+                myCanvas.pridajKruh();
+                return true;
+
+            // Zmazanie posledneho objektu
+            case R.id.zmazat_posledny_objekt:
+                myCanvas.zmazPoslednyObjekt();
                 return true;
 
             // Reset hodnot

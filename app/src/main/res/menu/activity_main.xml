@@ -22,8 +22,13 @@
     </item>
 
     <item
-        android:id="@+id/zmazat_poslednu_ciaru"
+        android:id="@+id/zmazat_posledny_objekt"
         android:title="@string/menu_zmazat_poslednu_ciaru">
+    </item>
+
+    <item
+        android:id="@+id/pridat_kruh"
+        android:title="@string/menu_pridat_kruh">
     </item>
 
     <item

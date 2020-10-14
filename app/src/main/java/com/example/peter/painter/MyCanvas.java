@@ -20,12 +20,15 @@ public class MyCanvas extends View {
     // Detekuje zmenu atributu pera.
     private boolean zmenaAtributuPera = false;
 
+    private boolean pridavanieKruhu = false;
+    private float radius;
+
     public MyCanvas(Context context) {
         super(context);
     }
 
     /**
-     * Vykreslování
+     * Vykreslování.
      */
     @Override
     public void onDraw(Canvas canvas) {
@@ -55,20 +58,32 @@ public class MyCanvas extends View {
                 // Při dotyku, se vyresetuje výchozí pozice
                 case MotionEvent.ACTION_DOWN:
                     path = new Path();
-                    path.moveTo(xPos, yPos);
-                    path.lineTo(xPos + 1, yPos + 1);
+                    if (pridavanieKruhu) {
+                        radius = 10;
+                    } else {
+                        path.moveTo(xPos, yPos);
+                        path.lineTo(xPos + 1, yPos + 1);
+                    }
                     break;
 
                 // Při pohybu nebo opuštění obrazovky
                 case MotionEvent.ACTION_MOVE:
-                    path.lineTo(xPos, yPos);
+                    if (pridavanieKruhu) {
+                        radius++;
+                        path.reset();
+                        path.addCircle(xPos, yPos, radius, Path.Direction.CW);
+                    } else {
+                        path.lineTo(xPos, yPos);
+                    }
                     break;
+
                 case MotionEvent.ACTION_UP:
                     // Nastaví se současné souřadnice
-                    path.lineTo(xPos, yPos);
+                 //   path.lineTo(xPos, yPos);
                     paths.add(path);
                     paints.add(paint);
                     path = new Path();
+                    pridavanieKruhu = false;
                     break;
             }
         }
@@ -76,6 +91,10 @@ public class MyCanvas extends View {
         // Překreslení
         invalidate();
         return true;
+    }
+
+    public void pridajKruh() {
+        pridavanieKruhu = true;
     }
 
     /**
@@ -106,7 +125,7 @@ public class MyCanvas extends View {
         invalidate();
     }
 
-    public void zmazPoslednuCiaru() {
+    public void zmazPoslednyObjekt() {
         zmenaAtributuPera = true;
         if (paths.size() > 0) {
             paths.remove(paths.size() - 1);
