@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Painter</string>
+    <string name="menu_clear">Vyčistiť plátno</string>
+    <string name="menu_exit">Ukončit</string>
+    <string name="title_activity_main">Painter</string>
+    <string name="menu_pen_color">Farba pera</string>
+    <string name="menu_background_color">Farba pozadia</string>
+    <string name="menu_pen_width">Hrúbka pera</string>
+    <string name="menu_zmazat_poslednu_ciaru">Zmazať poslednú čiaru</string>
+    <string name="menu_reset_hodnot">Reset</string>
+</resources>

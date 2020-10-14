@@ -1,0 +1,39 @@
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <item
+        android:id="@+id/clear"
+        android:title="@string/menu_clear">
+    </item>
+
+    <item
+        android:id="@+id/background_color"
+        android:title="@string/menu_background_color">
+    </item>
+
+    <item
+        android:id="@+id/pen_color"
+        android:title="@string/menu_pen_color">
+    </item>
+
+    <item
+        android:id="@+id/pen_width"
+        android:title="@string/menu_pen_width">
+    </item>
+
+    <item
+        android:id="@+id/zmazat_poslednu_ciaru"
+        android:title="@string/menu_zmazat_poslednu_ciaru">
+    </item>
+
+    <item
+        android:id="@+id/reset_hodnot"
+        android:title="@string/menu_reset_hodnot">
+    </item>
+
+    <item
+        android:id="@+id/exit"
+        android:title="@string/menu_exit">
+    </item>
+
+</menu>
