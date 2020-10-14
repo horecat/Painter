@@ -25,7 +25,7 @@ public class MyCanvas extends View {
     }
 
     /**
-     * Vykreslování.
+     * Vykreslování
      */
     @Override
     public void onDraw(Canvas canvas) {
