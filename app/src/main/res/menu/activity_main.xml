@@ -32,6 +32,11 @@
     </item>
 
     <item
+        android:id="@+id/pridat_obdlznik"
+        android:title="@string/menu_pridat_obdlznik">
+    </item>
+
+    <item
         android:id="@+id/reset_hodnot"
         android:title="@string/menu_reset_hodnot">
     </item>

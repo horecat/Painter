@@ -118,6 +118,11 @@ public class MainActivity extends Activity {
                 myCanvas.pridajKruh();
                 return true;
 
+            // Pridanie obdlznika
+            case R.id.pridat_obdlznik:
+                myCanvas.pridajObdlznik();
+                return true;
+
             // Zmazanie posledneho objektu
             case R.id.zmazat_posledny_objekt:
                 myCanvas.zmazPoslednyObjekt();

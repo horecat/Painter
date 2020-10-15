@@ -19,9 +19,20 @@ public class MyCanvas extends View {
     private List<MyPaint> paints = new ArrayList<MyPaint>();
     // Detekuje zmenu atributu pera.
     private boolean zmenaAtributuPera = false;
-
+    // Detekuje pridavanie kruhu.
     private boolean pridavanieKruhu = false;
+    // Detekuje pridavanie obdlznika.
+    private boolean pridavanieObdlznika = false;
+
+    //Radius kruhu.
     private float radius;
+
+    // Atributy pro ukládání pozice dotyku
+    private float xPos;
+    private float yPos;
+    // Atributy pociatocnej pozicie pri dotyku
+    private float xZac;
+    private float yZac;
 
     public MyCanvas(Context context) {
         super(context);
@@ -43,9 +54,6 @@ public class MyCanvas extends View {
      */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        // Inicializace proměnných pro ukládání pozice dotyku
-        float xPos;
-        float yPos;
         // Počet prstů, kterými se dotýkáme obrazovky. Maximum je (asi v závislosti na zařízení) limitováno na 4
         final int pointersCount = event.getPointerCount();
         // Projede všechny pointery - umožňuje multi-touch
@@ -58,9 +66,14 @@ public class MyCanvas extends View {
                 // Při dotyku, se vyresetuje výchozí pozice
                 case MotionEvent.ACTION_DOWN:
                     path = new Path();
-                    if (pridavanieKruhu) {
-                        radius = 10;
-                    } else {
+                    if (pridavanieKruhu) {    //pridavanie kruhu
+                       // radius = 10;
+                        xZac = xPos;
+                        yZac = yPos;
+                    } else if (pridavanieObdlznika) {    //pridavanie obdlznika
+                        xZac = xPos;
+                        yZac = yPos;
+                    } else {      //pridavanie ciary
                         path.moveTo(xPos, yPos);
                         path.lineTo(xPos + 1, yPos + 1);
                     }
@@ -68,22 +81,36 @@ public class MyCanvas extends View {
 
                 // Při pohybu nebo opuštění obrazovky
                 case MotionEvent.ACTION_MOVE:
-                    if (pridavanieKruhu) {
-                        radius++;
+                    if (pridavanieKruhu) {    //vykreslenie kruhu
                         path.reset();
+                       // radius++;
+                        radius = (float) Math.sqrt(Math.pow((xPos - xZac), 2) + Math.pow((yPos - yZac), 2));
                         path.addCircle(xPos, yPos, radius, Path.Direction.CW);
-                    } else {
+                    } else if (pridavanieObdlznika) {    //vykreslenie obdlznika
+                        path.reset();
+                        if (xZac > xPos) {    //prehodenie (swapnutie) X-ovych suradnic
+                            float temp = xPos;
+                            xPos = xZac;
+                            xZac = temp;
+                        }
+                        if (yZac > yPos) {    //prehodenie (swapnutie) Y-ovych suradnic
+                            float temp = yPos;
+                            yPos = yZac;
+                            yZac = temp;
+                        }
+                        path.addRect(xZac, yZac, xPos, yPos, Path.Direction.CW);
+                    } else {     //vykreslenie ciary
                         path.lineTo(xPos, yPos);
                     }
                     break;
 
                 case MotionEvent.ACTION_UP:
-                    // Nastaví se současné souřadnice
-                 //   path.lineTo(xPos, yPos);
+                    // ulozenie suradnic a pera do zoznamu
                     paths.add(path);
                     paints.add(paint);
                     path = new Path();
                     pridavanieKruhu = false;
+                    pridavanieObdlznika = false;
                     break;
             }
         }
@@ -95,6 +122,10 @@ public class MyCanvas extends View {
 
     public void pridajKruh() {
         pridavanieKruhu = true;
+    }
+
+    public void pridajObdlznik() {
+        pridavanieObdlznika = true;
     }
 
     /**
