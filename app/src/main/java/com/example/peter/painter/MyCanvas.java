@@ -10,11 +10,13 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
+import yuku.ambilwarna.AmbilWarnaDialog;
+
 public class MyCanvas extends View {
-    // Slouží k ukládání souřadnic cesty.
+    // Služí k ukladaniu souradnic cesty.
     private Path path = new Path();
     private List<Path> paths = new ArrayList<Path>();
-    // Obsahuje nastavení pera.
+    // Obsahuje nastavenie pera.
     private MyPaint paint = new MyPaint();
     private List<MyPaint> paints = new ArrayList<MyPaint>();
     // Detekuje zmenu atributu pera.
@@ -23,11 +25,13 @@ public class MyCanvas extends View {
     private boolean pridavanieKruhu = false;
     // Detekuje pridavanie obdlznika.
     private boolean pridavanieObdlznika = false;
+    // Ulozenie farby pozadia
+    private int farbaPozadia = Color.WHITE;
 
     //Radius kruhu.
     private float radius;
 
-    // Atributy pro ukládání pozice dotyku
+    // Atributy pre ukladanie pozicie dotyku
     private float xPos;
     private float yPos;
     // Atributy pociatocnej pozicie pri dotyku
@@ -39,7 +43,7 @@ public class MyCanvas extends View {
     }
 
     /**
-     * Vykreslování.
+     * Vykreslovanie.
      */
     @Override
     public void onDraw(Canvas canvas) {
@@ -50,20 +54,20 @@ public class MyCanvas extends View {
     }
 
     /**
-     * Obsluha události kliku (dotyku) obrazovky
+     * Obsluha udalosti kliku (dotyku) obrazovky
      */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        // Počet prstů, kterými se dotýkáme obrazovky. Maximum je (asi v závislosti na zařízení) limitováno na 4
+        // Počet prstov, ktorými se dotýkam obrazovky. Maximum je (asi v závislosti na zariadení) limitovane na 4
         final int pointersCount = event.getPointerCount();
-        // Projede všechny pointery - umožňuje multi-touch
+        // Prejde všetky pointery - umožňuje multi-touch
         for (int p = 0; p < pointersCount; p++) {
             xPos = event.getX(p);
             yPos = event.getY(p);
 
-            // Zpracování akcí
+            // Spracovanie akcii
             switch (event.getAction()) {
-                // Při dotyku, se vyresetuje výchozí pozice
+                // Pri dotyku, sa vyresetuje východzia pozicia
                 case MotionEvent.ACTION_DOWN:
                     path = new Path();
                     if (pridavanieKruhu) {    //pridavanie kruhu
@@ -79,13 +83,13 @@ public class MyCanvas extends View {
                     }
                     break;
 
-                // Při pohybu nebo opuštění obrazovky
+                // Pri pohybu alebo opustení obrazovky
                 case MotionEvent.ACTION_MOVE:
                     if (pridavanieKruhu) {    //vykreslenie kruhu
                         path.reset();
                        // radius++;
                         radius = (float) Math.sqrt(Math.pow((xPos - xZac), 2) + Math.pow((yPos - yZac), 2));
-                        path.addCircle(xPos, yPos, radius, Path.Direction.CW);
+                        path.addCircle(xZac, yZac, radius, Path.Direction.CW);
                     } else if (pridavanieObdlznika) {    //vykreslenie obdlznika
                         path.reset();
                         if (xZac > xPos) {    //prehodenie (swapnutie) X-ovych suradnic
@@ -105,7 +109,7 @@ public class MyCanvas extends View {
                     break;
 
                 case MotionEvent.ACTION_UP:
-                    // ulozenie suradnic a pera do zoznamu
+                    // ulozenie suradnic a pera do zoznamu (ArrayList-u)
                     paths.add(path);
                     paints.add(paint);
                     path = new Path();
@@ -115,7 +119,7 @@ public class MyCanvas extends View {
             }
         }
 
-        // Překreslení
+        // Prekreslenie
         invalidate();
         return true;
     }
@@ -129,7 +133,7 @@ public class MyCanvas extends View {
     }
 
     /**
-     * Vyčistí kreslící plátno. (Vymaže všechny souřadnice a překreslí)
+     * Vyčistí kresliace plátno. (Vymaže všetky suradnice a prekreslí)
      */
     public void clearCanvas() {
         zmenaAtributuPera = true;
@@ -152,7 +156,8 @@ public class MyCanvas extends View {
 
         paint = new MyPaint();
         paints.add(paint);
-        setBackgroundColor(Color.WHITE);
+        farbaPozadia = Color.WHITE;
+        setBackgroundColor(farbaPozadia);
         invalidate();
     }
 
@@ -166,21 +171,42 @@ public class MyCanvas extends View {
     }
 
     /**
-     * Nastavení barvy pera
-     * @param color Barva pera - lze použít Color.BARVA
+     * Nastavenie farby pera
+     * @param color Barva pera - je mozne použit Color.FARBA
      */
     public void setPenColor(int color) {
         zmenaAtributuPera = true;
         float odpamatanieSirky = paint.getStrokeWidth();
+        final int odpamatanieFarby = paint.getColor();
         paint = new MyPaint();
         paint.setStrokeWidth(odpamatanieSirky);
-        paint.setColor(color);
-        invalidate();
+        if (color == MainActivity.VYBER_Z_PALETY) {
+            AmbilWarnaDialog dialog = new AmbilWarnaDialog(getContext(), odpamatanieFarby, new AmbilWarnaDialog.OnAmbilWarnaListener() {
+                @Override
+                public void onOk(AmbilWarnaDialog dialog, int color) {
+                    // color is the color selected by the user.
+                    paint.setColor(color);
+                    invalidate();
+                }
+
+                @Override
+                public void onCancel(AmbilWarnaDialog dialog) {
+                    // cancel was selected by the user
+                    paint.setColor(odpamatanieFarby);
+                    invalidate();
+                }
+            });
+            dialog.show();
+
+        } else {
+            paint.setColor(color);
+            invalidate();
+        }
     }
 
     /**
-     * Nastavení tloušťky
-     * @param width Tloušťka pera
+     * Nastavenie hrubky
+     * @param width Hrubka pera
      */
     public void setPenWidth(float width) {
         zmenaAtributuPera = true;
@@ -191,4 +217,29 @@ public class MyCanvas extends View {
         invalidate();
     }
 
+    public void setFarbaPozadia(int color) {
+        if (color == MainActivity.VYBER_Z_PALETY) {
+            AmbilWarnaDialog dialog = new AmbilWarnaDialog(getContext(), farbaPozadia, new AmbilWarnaDialog.OnAmbilWarnaListener() {
+                @Override
+                public void onOk(AmbilWarnaDialog dialog, int color) {
+                    // color is the color selected by the user.
+                    farbaPozadia = color;
+                    setBackgroundColor(farbaPozadia);
+                    invalidate();
+                }
+
+                @Override
+                public void onCancel(AmbilWarnaDialog dialog) {
+                    // cancel was selected by the user
+                    invalidate();
+                }
+            });
+            dialog.show();
+
+        } else {
+            farbaPozadia = color;
+            setBackgroundColor(farbaPozadia);
+            invalidate();
+        }
+    }
 }

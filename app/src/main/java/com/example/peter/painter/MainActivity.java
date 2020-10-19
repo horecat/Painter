@@ -12,13 +12,14 @@ import android.widget.Toast;
 import java.util.HashMap;
 
 public class MainActivity extends Activity {
-    // Třída pro vykreslování. Dědí "View"
+    public static final int VYBER_Z_PALETY = 0;
+    // Trieda pre vykreslovanie. Dedí od "View".
     private MyCanvas myCanvas;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Přepnutí zobrazování na naši vlastní třídu
+        // Prepnutie zobrazovania na moju vlastnú triedu.
         myCanvas = new MyCanvas(this);
         setContentView(myCanvas);
     }
@@ -30,23 +31,23 @@ public class MainActivity extends Activity {
     }
 
     /**
-     * Práce s menu
+     * Práca s menu
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // získání ID vybrané položky
+        // získanie ID vybranej položky
         switch (item.getItemId()) {
-            // Ukončení aplikace
+            // Ukončenie aplikacie
             case R.id.exit:
                 this.finish();
                 return true;
 
-            // Vyčištění plátna
+            // Vyčistenie plátna
             case R.id.clear:
                 myCanvas.clearCanvas();
                 return true;
 
-            // Nastavení farby pera
+            // Nastavenie farby pera
             case R.id.pen_color:
                 final HashMap<String, Integer> colorList = new HashMap<String, Integer>();
                 colorList.put("Čierna", Color.BLACK);
@@ -56,12 +57,13 @@ public class MainActivity extends Activity {
                 colorList.put("Modrá", Color.BLUE);
                 colorList.put("Fialová", Color.MAGENTA);
                 colorList.put("Šedá", Color.GRAY);
+                colorList.put("Vyber z palety...", VYBER_Z_PALETY);
                 final CharSequence[] colors = colorList.keySet().toArray(new CharSequence[colorList.size()]);
-                // Vytvoření dialogu
+                // Vytvorenie dialogu
                 AlertDialog.Builder colorPickerDialog = new AlertDialog.Builder(this);
                 colorPickerDialog.setTitle("Vyber farbu pera:");
                 colorPickerDialog.setItems(colors, new DialogInterface.OnClickListener() {
-                    // Po zvolení se zobrazí informace o vybrané položce a zavolá se příslušná metoda, která nastaví vybranou vlastnost
+                    // Po zvolení sa zobrazí informacia o vybranej položke a zavolá sa příslušná metoda, ktorá nastaví vybranu vlastnost
                     public void onClick(DialogInterface dialog, int item) {
                         Toast.makeText(getApplicationContext(), "Vybraná farba pera: " + colors[item], Toast.LENGTH_SHORT).show();
                         myCanvas.setPenColor(colorList.get(colors[item]));
@@ -82,15 +84,16 @@ public class MainActivity extends Activity {
                 colorBackgroundList.put("Fialová", Color.MAGENTA);
                 colorBackgroundList.put("Šedá", Color.GRAY);
                 colorBackgroundList.put("Biela", Color.WHITE);
+                colorBackgroundList.put("Vyber z palety...", VYBER_Z_PALETY);
                 final CharSequence[] colorsBackground = colorBackgroundList.keySet().toArray(new CharSequence[colorBackgroundList.size()]);
-                // Vytvoření dialogu
+                // Vytvorenie dialogu
                 AlertDialog.Builder colorPickerDialogBackground = new AlertDialog.Builder(this);
                 colorPickerDialogBackground.setTitle("Vyber farbu pozadia:");
                 colorPickerDialogBackground.setItems(colorsBackground, new DialogInterface.OnClickListener() {
-                    // Po zvolení se zobrazí informace o vybrané položce a zavolá se příslušná metoda, která nastaví vybranou vlastnost
+                    // Po zvolení sa zobrazí informacia o vybranej položke a zavolá sa příslušná metoda, která nastaví vybranu vlastnost
                     public void onClick(DialogInterface dialog, int item) {
                         Toast.makeText(getApplicationContext(), "Vybraná farba pozadia: " + colorsBackground[item], Toast.LENGTH_SHORT).show();
-                        myCanvas.setBackgroundColor(colorBackgroundList.get(colorsBackground[item]));
+                        myCanvas.setFarbaPozadia(colorBackgroundList.get(colorsBackground[item]));
                     }
                 });
                 AlertDialog pickColorBackground = colorPickerDialogBackground.create();
